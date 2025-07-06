@@ -107,5 +107,5 @@ Frontend will open at: `http://localhost:5173`
 
 ---
 
-## 🙋‍♀️ Author
+## 🧑‍💻 Author
 [GitHub: @recameron](https://github.com/recameron)
