@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import CreateCapsule from "./components/CreateCapsule";
 import EntryList from "./components/EntryList";
 
