@@ -1,12 +1,14 @@
-import React from "react";
-import CreateCapsule from "./CreateCapsule";
+import CreateCapsule from "./components/CreateCapsule";
+import EntryList from "./components/EntryList";
 
-function App() {
+export default function App() {
+  const [reload, setReload] = useState(false);
+
   return (
-    <div className="p-4">
-      // <CreateCapsule />
+    <div className="container mx-auto p-6">
+      <h1 className="text-2xl font-bold mb-4">Digital Time Capsule</h1>
+      <CreateCapsule onAdd={() => setReload(!reload)} />
+      <EntryList key={reload} />
     </div>
   );
 }
-
-export default App;

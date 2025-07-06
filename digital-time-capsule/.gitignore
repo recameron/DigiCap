@@ -7,3 +7,16 @@ server/node_modules/
 *.log
 dist/
 .env
+
+
+# Ignore Python cache and environments
+__pycache__/
+*.py[cod]
+
+# Ignore virtual environments
+venv/
+env/
+ENV/
+
+# Ignore site-packages folder (inside virtualenv)
+site-packages/
