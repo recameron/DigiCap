@@ -1,14 +1,17 @@
+import os
+from dotenv import load_dotenv
 from flask import Flask, request, jsonify
 from flask_pymongo import PyMongo
-from flask_cors import CORS 
+from flask_cors import CORS
 
 from datetime import datetime
+
+load_dotenv()
 
 app = Flask(__name__)
 
 # MongoDB config
-app.config["MONGO_URI"] = "mongodb+srv://rcameron4747:NvsknD0ANImBBLMn@cluster0.knfwbcn.mongodb.net/DigitalTimeCapsule?retryWrites=true&w=majority&appName=Cluster0"
-#app.config["MONGO_URI"] = "mongodb+srv://rcameron4747:gHnytKvoapiHKd2K@cluster0.knfwbcn.mongodb.net/"
+app.config["MONGO_URI"] = os.getenv("MONGODB_URI")
 mongo = PyMongo(app)
 
 # Check if mongo.db is initialized
