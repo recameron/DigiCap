@@ -7,8 +7,8 @@ from datetime import datetime
 app = Flask(__name__)
 
 # MongoDB config
-#app.config["MONGO_URI"] = "mongodb+srv://rcameron4747:gHnytKvoapiHKd2K@cluster0.knfwbcn.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-app.config["MONGO_URI"] = "mongodb+srv://rcameron4747:gHnytKvoapiHKd2K@cluster0.knfwbcn.mongodb.net/"
+app.config["MONGO_URI"] = "mongodb+srv://rcameron4747:NvsknD0ANImBBLMn@cluster0.knfwbcn.mongodb.net/DigitalTimeCapsule?retryWrites=true&w=majority&appName=Cluster0"
+#app.config["MONGO_URI"] = "mongodb+srv://rcameron4747:gHnytKvoapiHKd2K@cluster0.knfwbcn.mongodb.net/"
 mongo = PyMongo(app)
 
 # Check if mongo.db is initialized
@@ -27,19 +27,38 @@ def get_entries():
         entry["_id"] = str(entry["_id"])
     return jsonify(entries)
 
-@app.route("/api/entries", methods=["POST"])
+@app.route('/api/entries', methods=['POST'])
 def add_entry():
     data = request.get_json()
-    message = data.get("message")
-    open_date = data.get("openDate")
-    if not message or not open_date:
-        return jsonify({"error": "Missing fields"}), 400
+    print("Received data:", data)  # <-- Log the data to console
+
+    if not data:
+        return jsonify({"error": "No JSON data received"}), 400
+    
+    message = data.get('message')
+    recipient_email = data.get('recipientEmail')
+    unlock_date = data.get('unlockDate')
+
+    missing_fields = []
+    if not message:
+        missing_fields.append('message')
+    if not recipient_email:
+        missing_fields.append('recipientEmail')
+    if not unlock_date:
+        missing_fields.append('unlockDate')
+
+    if missing_fields:
+        return jsonify({"error": f"Missing required fields: {', '.join(missing_fields)}"}), 400
+    
+    # Insert into MongoDB
     mongo.db.entries.insert_one({
         "message": message,
-        "openDate": open_date,
-        "createdAt": datetime.now()
+        "recipientEmail": recipient_email,
+        "unlockDate": unlock_date
     })
-    return jsonify({"message": "Entry added"}), 201
+
+    return jsonify({"success": True}), 201
+
 
 if __name__ == "__main__":
     app.run(port=5000, debug=True)

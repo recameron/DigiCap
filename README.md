@@ -1,25 +1,25 @@
-# 🕰️ Digital Time Capsule
+# Digital Time Capsule
 
 A full-stack web app that lets users write and schedule digital messages to be delivered or unlocked in the future.
 
 ---
 
-## ✨ Features
+## Features
 
 * 📬 Create a digital message (capsule) with:
 
   * Text message
   * Recipient email
   * Future unlock date
-* ✅ Form validation (message length, email, date)
-* 📎 Sends capsule data to an Express backend (stored in-memory for now)
-* 🎨 Styled with Tailwind CSS
-* ⚛️ Built with React + Vite frontend
-* 🚀 Node.js + Express backend API
+*  Form validation (message length, email, date)
+*  Sends capsule data to an Express backend (stored in-memory for now)
+*  Styled with Tailwind CSS
+*  Built with React + Vite frontend
+*  Node.js + Express backend API
 
 ---
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 digital-time-capsule/
@@ -30,9 +30,9 @@ digital-time-capsule/
 
 ---
 
-## 🧑‍💻 Getting Started
+##  Getting Started
 
-### 🔧 Prerequisites
+###  Prerequisites
 
 * Node.js (v18+ recommended)
 * npm
@@ -82,7 +82,7 @@ Frontend will open at: `http://localhost:5173`
 
 ---
 
-## 🌐 API Endpoints
+##  API Endpoints
 
 | Method | Endpoint        | Description        |
 | ------ | --------------- | ------------------ |
@@ -91,7 +91,7 @@ Frontend will open at: `http://localhost:5173`
 
 ---
 
-## 📌 TODO
+##  TODO
 
 * [ ] Save capsules to a database (e.g. MongoDB or SQLite)
 * [ ] Add authentication (login/signup)
@@ -101,11 +101,11 @@ Frontend will open at: `http://localhost:5173`
 
 ---
 
-## 📄 License
+##  License
 
 [MIT](LICENSE)
 
 ---
 
-## 🧑‍💻 Author
+##  Author
 [GitHub: @recameron](https://github.com/recameron)

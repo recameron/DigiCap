@@ -48,15 +48,46 @@ export default function CreateCapsule() {
   }
 
   function handleSubmit(e) {
-    e.preventDefault();
-    if (validate()) {
-      console.log('Valid form submitted:', formData);
-      // TODO: Submit data to API or backend
-      alert('Capsule created!');
-      // Reset form
-      setFormData({ message: '', recipientEmail: '', unlockDate: '' });
-    }
+  e.preventDefault();
+
+  if (validate()) {
+    console.log('Valid form submitted:', formData);
+
+    // Build your payload — adjust field names to match your backend
+    const payload = {
+      message: formData.message,
+      recipientEmail: formData.recipientEmail,
+      unlockDate: formData.unlockDate
+    };
+
+    // Send POST request
+    fetch("http://localhost:5000/api/entries", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to create capsule");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log("Success:", data);
+        alert("Capsule created!");
+
+        // Reset form
+        setFormData({ message: "", recipientEmail: "", unlockDate: "" });
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        alert("Something went wrong!");
+      });
   }
+}
+
 
   return (
     <form onSubmit={handleSubmit} className="max-w-md mx-auto p-4 border rounded shadow">
