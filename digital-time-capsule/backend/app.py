@@ -7,8 +7,16 @@ from datetime import datetime
 app = Flask(__name__)
 
 # MongoDB config
-app.config["MONGO_URI"] = "mongodb+srv://rcameron4747:HAKvAlno540l9tb5@cluster0.knfwbcn.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+#app.config["MONGO_URI"] = "mongodb+srv://rcameron4747:gHnytKvoapiHKd2K@cluster0.knfwbcn.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+app.config["MONGO_URI"] = "mongodb+srv://rcameron4747:gHnytKvoapiHKd2K@cluster0.knfwbcn.mongodb.net/"
 mongo = PyMongo(app)
+
+# Check if mongo.db is initialized
+if mongo.db is None:
+    print("MongoDB connection NOT initialized")
+else:
+    print("MongoDB connection initialized successfully")
+
 
 CORS(app)
 
