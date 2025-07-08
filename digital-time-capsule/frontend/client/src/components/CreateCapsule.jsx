@@ -5,6 +5,7 @@ export default function CreateCapsule() {
     message: '',
     recipientEmail: '',
     unlockDate: '',
+    image: null, // add image to state
   });
 
   const [errors, setErrors] = useState({});
@@ -41,53 +42,52 @@ export default function CreateCapsule() {
   }
 
   function handleChange(e) {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-    // Clear error on change
-    setErrors(prev => ({ ...prev, [name]: null }));
+    const { name, value, files } = e.target;
+
+    if (name === 'image') {
+      setFormData(prev => ({ ...prev, image: files[0] }));
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+      setErrors(prev => ({ ...prev, [name]: null }));
+    }
   }
 
   function handleSubmit(e) {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (validate()) {
-    console.log('Valid form submitted:', formData);
+    if (validate()) {
+      console.log('Valid form submitted:', formData);
 
-    // Build your payload — adjust field names to match your backend
-    const payload = {
-      message: formData.message,
-      recipientEmail: formData.recipientEmail,
-      unlockDate: formData.unlockDate
-    };
+      const payload = new FormData();
+      payload.append('message', formData.message);
+      payload.append('recipientEmail', formData.recipientEmail);
+      payload.append('unlockDate', formData.unlockDate);
+      if (formData.image) {
+        payload.append('image', formData.image);
+      }
 
-    // Send POST request
-    fetch("http://localhost:5000/api/entries", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to create capsule");
-        }
-        return response.json();
+      fetch("http://localhost:5000/api/entries", {
+        method: "POST",
+        body: payload,
       })
-      .then((data) => {
-        console.log("Success:", data);
-        alert("Capsule created!");
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Failed to create capsule");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          console.log("Success:", data);
+          alert("Capsule created!");
 
-        // Reset form
-        setFormData({ message: "", recipientEmail: "", unlockDate: "" });
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        alert("Something went wrong!");
-      });
+          setFormData({ message: "", recipientEmail: "", unlockDate: "", image: null });
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          alert("Something went wrong!");
+        });
+    }
   }
-}
-
 
   return (
     <form onSubmit={handleSubmit} className="max-w-md mx-auto p-4 border rounded shadow">
@@ -121,7 +121,7 @@ export default function CreateCapsule() {
         )}
       </label>
 
-      <label className="block mb-4">
+      <label className="block mb-2">
         Unlock Date:
         <input
           type="date"
@@ -134,6 +134,17 @@ export default function CreateCapsule() {
         {errors.unlockDate && (
           <p className="text-red-600 text-sm mt-1">{errors.unlockDate}</p>
         )}
+      </label>
+
+      <label className="block mb-4">
+        Upload Image:
+        <input
+          type="file"
+          name="image"
+          accept="image/*"
+          onChange={handleChange}
+          className="w-full p-2 border rounded"
+        />
       </label>
 
       <button

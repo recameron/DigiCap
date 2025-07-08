@@ -3,7 +3,8 @@ from dotenv import load_dotenv
 from flask import Flask, request, jsonify
 from flask_pymongo import PyMongo
 from flask_cors import CORS
-
+from werkzeug.utils import secure_filename
+from flask import send_from_directory
 from datetime import datetime
 
 load_dotenv()
@@ -12,6 +13,7 @@ app = Flask(__name__)
 
 # MongoDB config
 app.config["MONGO_URI"] = os.getenv("MONGODB_URI")
+app.config['UPLOAD_FOLDER'] = os.path.join(os.getcwd(), 'uploads')
 mongo = PyMongo(app)
 
 # Check if mongo.db is initialized
@@ -32,36 +34,42 @@ def get_entries():
 
 @app.route('/api/entries', methods=['POST'])
 def add_entry():
-    data = request.get_json()
-    print("Received data:", data)  # <-- Log the data to console
+    # Check if request is multipart form data
+    if 'message' not in request.form or 'recipientEmail' not in request.form or 'unlockDate' not in request.form:
+        return jsonify({"error": "Missing required form fields"}), 400
 
-    if not data:
-        return jsonify({"error": "No JSON data received"}), 400
-    
-    message = data.get('message')
-    recipient_email = data.get('recipientEmail')
-    unlock_date = data.get('unlockDate')
+    message = request.form['message']
+    recipient_email = request.form['recipientEmail']
+    unlock_date = request.form['unlockDate']
 
-    missing_fields = []
-    if not message:
-        missing_fields.append('message')
-    if not recipient_email:
-        missing_fields.append('recipientEmail')
-    if not unlock_date:
-        missing_fields.append('unlockDate')
+    image_file = request.files.get('image')
+    image_filename = None
 
-    if missing_fields:
-        return jsonify({"error": f"Missing required fields: {', '.join(missing_fields)}"}), 400
+    if image_file:
+        # Secure the filename
+        image_filename = secure_filename(image_file.filename)
+        # Create uploads directory if it doesn't exist
+        upload_folder = os.path.join(os.getcwd(), 'uploads')
+        os.makedirs(upload_folder, exist_ok=True)
+        # Save file
+        image_path = os.path.join(upload_folder, image_filename)
+        image_file.save(image_path)
     
     # Insert into MongoDB
-    mongo.db.entries.insert_one({
+    entry_data = {
         "message": message,
         "recipientEmail": recipient_email,
-        "unlockDate": unlock_date
-    })
+        "unlockDate": unlock_date,
+        "imageFilename": image_filename if image_file else None,
+        "createdAt": datetime.utcnow()
+    }
+    mongo.db.entries.insert_one(entry_data)
 
     return jsonify({"success": True}), 201
 
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 if __name__ == "__main__":
     app.run(port=5000, debug=True)

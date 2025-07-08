@@ -14,7 +14,16 @@ export default function EntryList() {
       {entries.map((entry, idx) => (
         <div key={idx} className="border p-4 rounded shadow">
           <p>{entry.message}</p>
-          <p className="text-sm text-gray-500">Open on: {entry.openDate}</p>
+          <p className="text-sm text-gray-500">Open on: {entry.unlockDate}</p>
+
+          {/* Show image if it exists */}
+          {entry.image && (
+            <img
+              src={`http://localhost:5000/${entry.image}`}
+              alt="Capsule"
+              className="mt-2 rounded w-full max-w-xs object-cover"
+            />
+          )}
         </div>
       ))}
     </div>
