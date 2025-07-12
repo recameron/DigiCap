@@ -19,7 +19,7 @@ export default function EntryList() {
           {/* Show image if it exists */}
           {entry.image && (
             <img
-              src={`http://localhost:5000/${entry.image}`}
+              src={`/${entry.image}`}
               alt="Capsule"
               className="mt-2 rounded w-full max-w-xs object-cover"
             />

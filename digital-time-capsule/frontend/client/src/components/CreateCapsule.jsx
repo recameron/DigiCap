@@ -66,7 +66,7 @@ export default function CreateCapsule() {
         payload.append('image', formData.image);
       }
 
-      fetch("http://localhost:5000/api/entries", {
+      fetch("/api/entries", {
         method: "POST",
         body: payload,
       })

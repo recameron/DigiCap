@@ -16,14 +16,6 @@ app.config["MONGO_URI"] = os.getenv("MONGODB_URI")
 app.config['UPLOAD_FOLDER'] = os.path.join(os.getcwd(), 'uploads')
 mongo = PyMongo(app)
 
-@app.route("/")
-@app.route("/<path:path>")
-def serve_react(path=""):
-    if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
-        return send_from_directory(app.static_folder, path)
-    else:
-        return send_from_directory(app.static_folder, "index.html")
-
 # Check if mongo.db is initialized
 if mongo.db is None:
     print("MongoDB connection NOT initialized")
@@ -79,5 +71,15 @@ def add_entry():
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
+#Serve static pages
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve_react(path):
+    build_dir = os.path.join(os.getcwd(), 'frontend', 'client', 'dist')
+    if path != "" and os.path.exists(os.path.join(build_dir, path)):
+        return send_from_directory(build_dir, path)
+    else:
+        return send_from_directory(build_dir, 'index.html')
+
 if __name__ == "__main__":
-    app.run(port=5000, debug=True)
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
