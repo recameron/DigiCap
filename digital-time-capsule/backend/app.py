@@ -16,6 +16,14 @@ app.config["MONGO_URI"] = os.getenv("MONGODB_URI")
 app.config['UPLOAD_FOLDER'] = os.path.join(os.getcwd(), 'uploads')
 mongo = PyMongo(app)
 
+@app.route("/")
+@app.route("/<path:path>")
+def serve_react(path=""):
+    if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
+        return send_from_directory(app.static_folder, path)
+    else:
+        return send_from_directory(app.static_folder, "index.html")
+
 # Check if mongo.db is initialized
 if mongo.db is None:
     print("MongoDB connection NOT initialized")
