@@ -20,3 +20,7 @@ ENV/
 
 # Ignore site-packages folder (inside virtualenv)
 site-packages/
+
+# Ignore Uploads folder
+backend/uploads/
+
