@@ -1,105 +1,44 @@
-# Digital Time Capsule
+# DigiCap — Digital Time Capsule
 
-A full-stack web app that lets users write and schedule digital messages to be delivered or unlocked in the future.
+Welcome to **DigiCap**, a web application that lets users create and store digital time capsules — messages, photos, or memories intended to be opened in the future.
 
----
+## ✨ Features
 
-## Features
-
-* 📬 Create a digital message (capsule) with:
-
-  * Text message
-  * Recipient email
-  * Future unlock date
-*  Form validation (message length, email, date)
-*  Sends capsule data to an Express backend (stored in-memory for now)
-*  Styled with Tailwind CSS
-*  Built with React + Vite frontend
-*  Node.js + Express backend API
+- Create personal digital time capsules
+- Store text messages and file uploads securely
+- Set future open dates for your capsules
+- View and manage your capsules
+- Modern, responsive frontend interface
 
 ---
 
-##  Project Structure
+## 🛠️ Tech Stack
 
-```
-digital-time-capsule/
-├── client/        # React frontend (Vite)
-├── server/        # Node.js + Express backend
-└── README.md      # You are here
-```
+### Frontend
 
----
+- **React** (JavaScript)
+- **Tailwind CSS**
+- **HTML**
 
-##  Getting Started
+### Backend
 
-###  Prerequisites
+- **Python** (Flask)
+- **MongoDB Atlas** (cloud database)
 
-* Node.js (v18+ recommended)
-* npm
+### Deployment
 
-### 1. Clone the repo
-
-```bash
-git clone https://github.com/your-username/digital-time-capsule.git
-cd digital-time-capsule
-```
-
-### 2. Install dependencies
-
-#### Client (frontend)
-
-```bash
-cd client
-npm install
-```
-
-#### Server (backend)
-
-```bash
-cd ../server
-npm install
-```
-
-### 3. Start the app
-
-#### Run the backend server
-
-```bash
-cd server
-node index.js
-```
-
-Server will run at: `http://localhost:4000`
-
-#### Run the frontend (in another terminal)
-
-```bash
-cd client
-npm run dev
-```
-
-Frontend will open at: `http://localhost:5173`
+- **Google Cloud Run** for scalable container deployment
 
 ---
 
-##  API Endpoints
+## 🚀 Live Demo
 
-| Method | Endpoint        | Description        |
-| ------ | --------------- | ------------------ |
-| POST   | `/api/capsules` | Create new capsule |
-| GET    | `/api/capsules` | List all capsules  |
+> 🌐 [Link to deployed app]  
+> https://digicap-619266088619.us-central1.run.app
 
 ---
 
-##  TODO
 
-* [ ] Save capsules to a database (e.g. MongoDB or SQLite)
-* [ ] Add authentication (login/signup)
-* [ ] Schedule email delivery (e.g. with Nodemailer + cron)
-* [ ] Unlock capsules based on date logic
-* [ ] Deploy to Render / Netlify / Vercel
-
----
 
 ##  License
 
