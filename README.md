@@ -2,7 +2,7 @@
 
 Welcome to **DigiCap**, a web application that lets users create and store digital time capsules — messages, photos, or memories intended to be opened in the future.
 
-## ✨ Features
+## Features
 
 - Create personal digital time capsules
 - Store text messages and file uploads securely
@@ -12,7 +12,7 @@ Welcome to **DigiCap**, a web application that lets users create and store digit
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 ### Frontend
 
@@ -31,7 +31,7 @@ Welcome to **DigiCap**, a web application that lets users create and store digit
 
 ---
 
-## 🚀 Live Demo
+## Live Demo
 
 > 🌐 [Link to deployed app]  
 > https://digicap-619266088619.us-central1.run.app
