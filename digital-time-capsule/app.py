@@ -30,18 +30,24 @@ def get_entries():
     entries = list(mongo.db.entries.find())
     for entry in entries:
         entry["_id"] = str(entry["_id"])
+        entry["unlock_datetime"] = entry["unlock_datetime"].isoformat() if entry.get("unlock_datetime") else None
     return jsonify(entries)
 
 @app.route('/api/entries', methods=['POST'])
 def add_entry():
     # Check if request is multipart form data
-    if 'message' not in request.form or 'recipientEmail' not in request.form or 'unlockDate' not in request.form:
+    if 'message' not in request.form or 'recipientEmail' not in request.form or 'unlock_datetime' not in request.form:
         return jsonify({"error": "Missing required form fields"}), 400
 
     message = request.form['message']
     recipient_email = request.form['recipientEmail']
-    unlock_date = request.form['unlockDate']
+    unlock_datetime = request.form['unlock_datetime']
 
+    try:
+        unlock_datetime = datetime.fromisoformat(unlock_datetime.replace("Z", "+00:00"))
+    except ValueError:
+        return jsonify({"error": "Invalid unlock_datetime format"}), 400
+    
     image_file = request.files.get('image')
     image_filename = None
 
@@ -59,7 +65,7 @@ def add_entry():
     entry_data = {
         "message": message,
         "recipientEmail": recipient_email,
-        "unlockDate": unlock_date,
+        "unlock_datetime": unlock_datetime,
         "imageFilename": image_filename if image_file else None,
         "createdAt": datetime.utcnow()
     }

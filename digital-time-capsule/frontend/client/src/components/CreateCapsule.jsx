@@ -5,6 +5,7 @@ export default function CreateCapsule() {
     message: '',
     recipientEmail: '',
     unlockDate: '',
+    unlockTime: '', // add time to state
     image: null, // add image to state
   });
 
@@ -29,11 +30,19 @@ export default function CreateCapsule() {
 
     if (!formData.unlockDate) {
       newErrors.unlockDate = 'Unlock date is required.';
-    } else {
-      const today = new Date();
-      const unlock = new Date(formData.unlockDate);
-      if (unlock <= today) {
-        newErrors.unlockDate = 'Unlock date must be in the future.';
+    } 
+
+    if (!formData.unlockTime){
+      newErrors.unlockTime = 'Unlock time is required.';
+    }
+
+    if (formData.unlockDate && formData.unlockTime){
+      const now = new Date();
+      const unlockDateTime = new Date(`${formData.unlockDate}T${formData.unlockTime}`);
+      const fiveMinutesFromNow = new Date(now.getTime() + 5 * 60 * 1000);
+
+      if (unlockDateTime <= fiveMinutesFromNow) {
+        newErrors.unlockDate = 'Unlock time must be at least 5 minutes in the future.';
       }
     }
 
@@ -61,7 +70,8 @@ export default function CreateCapsule() {
       const payload = new FormData();
       payload.append('message', formData.message);
       payload.append('recipientEmail', formData.recipientEmail);
-      payload.append('unlockDate', formData.unlockDate);
+      const combinedDateTime = new Date(`${formData.unlockDate}T${formData.unlockTime}`);
+      payload.append('unlock_datetime', combinedDateTime.toISOString());
       if (formData.image) {
         payload.append('image', formData.image);
       }
@@ -80,7 +90,13 @@ export default function CreateCapsule() {
           console.log("Success:", data);
           alert("Capsule created!");
 
-          setFormData({ message: "", recipientEmail: "", unlockDate: "", image: null });
+          setFormData({ 
+            message: "", 
+            recipientEmail: "", 
+            unlockDate: "",
+            unlockTime: "", 
+            image: null
+           });
         })
         .catch((error) => {
           console.error("Error:", error);
@@ -135,6 +151,22 @@ export default function CreateCapsule() {
           <p className="text-red-600 text-sm mt-1">{errors.unlockDate}</p>
         )}
       </label>
+
+      <label className="block mb-2">
+        Unlock Time:
+        <input
+          type="time"
+          name="unlockTime"
+          value={formData.unlockTime}
+          onChange={handleChange}
+          className={`w-full p-2 border rounded ${errors.unlockTime ? 'border-red-500' : ''}`}
+          required
+        />
+        {errors.unlockTime && (
+          <p className="text-red-600 text-s mt-1">{errors.unlockTime}</p>
+        )}
+      </label>
+
 
       <label className="block mb-4">
         Upload Image:
