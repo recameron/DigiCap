@@ -67,7 +67,8 @@ def add_entry():
         "recipientEmail": recipient_email,
         "unlock_datetime": unlock_datetime,
         "imageFilename": image_filename if image_file else None,
-        "createdAt": datetime.utcnow()
+        "createdAt": datetime.utcnow(),
+        "sent": False
     }
     mongo.db.entries.insert_one(entry_data)
 
