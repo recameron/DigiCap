@@ -7,7 +7,6 @@ from werkzeug.utils import secure_filename
 from flask import send_from_directory
 from google.cloud import storage
 import uuid
-import requests
 from datetime import datetime, timedelta
 
 load_dotenv()
@@ -90,30 +89,6 @@ def serve_react(path):
         return send_from_directory(build_dir, path)
     else:
         return send_from_directory(build_dir, 'index.html')
-    
-
-def get_current_service_account_email():
-    # This queries the metadata server in GCP to get the service account email your code runs under
-    try:
-        url = "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/email"
-        headers = {"Metadata-Flavor": "Google"}
-        resp = requests.get(url, headers=headers)
-        if resp.status_code == 200:
-            return resp.text
-        else:
-            return "Unknown"
-    except Exception as e:
-        return f"Error: {e}"
-
-print("Current service account:", get_current_service_account_email())
-
-def test_storage_access():
-    client = storage.Client()
-    bucket = client.bucket("digicap-uploads")
-    blobs = list(bucket.list_blobs(max_results=1))
-    print(f"Bucket access success. Found {len(blobs)} objects.")
-
-
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
