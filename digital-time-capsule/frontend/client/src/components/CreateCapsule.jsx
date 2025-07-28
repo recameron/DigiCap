@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 
 export default function CreateCapsule() {
+  const fileInputRef = useRef(null);
   const [formData, setFormData] = useState({
     message: '',
     recipientEmail: '',
@@ -97,6 +98,10 @@ export default function CreateCapsule() {
             unlockTime: "", 
             image: null
            });
+
+           if (fileInputRef.current){
+            fileInputRef.current.value = ""
+           }
         })
         .catch((error) => {
           console.error("Error:", error);
@@ -176,6 +181,7 @@ export default function CreateCapsule() {
           accept="image/*"
           onChange={handleChange}
           className="w-full p-2 border rounded"
+          ref={fileInputRef}
         />
       </label>
 
