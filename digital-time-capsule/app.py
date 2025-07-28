@@ -5,12 +5,15 @@ from flask_pymongo import PyMongo
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 from flask import send_from_directory
-from datetime import datetime
+from google.cloud import storage
+import uuid
+import requests
+from datetime import datetime, timedelta
 
 load_dotenv()
 
 app = Flask(__name__)
-
+bucket_name = os.environ.get("GCS_BUCKET_NAME")
 # MongoDB config
 app.config["MONGO_URI"] = os.getenv("MONGODB_URI")
 app.config['UPLOAD_FOLDER'] = os.path.join(os.getcwd(), 'uploads')
@@ -52,21 +55,21 @@ def add_entry():
     image_filename = None
 
     if image_file:
-        # Secure the filename
-        image_filename = secure_filename(image_file.filename)
-        # Create uploads directory if it doesn't exist
-        upload_folder = os.path.join(os.getcwd(), 'uploads')
-        os.makedirs(upload_folder, exist_ok=True)
-        # Save file
-        image_path = os.path.join(upload_folder, image_filename)
-        image_file.save(image_path)
+        storage_client = storage.Client()
+        bucket = storage_client.bucket(bucket_name)
+        image_filename = f"{uuid.uuid4().hex}_{secure_filename(image_file.filename)}"
+        blob = bucket.blob(image_filename)
+        blob.upload_from_file(image_file,content_type=image_file.content_type)
+        stored_blob_name = image_filename
+    else:
+        stored_blob_name = None
     
     # Insert into MongoDB
     entry_data = {
         "message": message,
         "recipientEmail": recipient_email,
         "unlock_datetime": unlock_datetime,
-        "imageFilename": image_filename if image_file else None,
+        "imageBlobName": stored_blob_name,
         "createdAt": datetime.utcnow(),
         "sent": False
     }
@@ -87,6 +90,30 @@ def serve_react(path):
         return send_from_directory(build_dir, path)
     else:
         return send_from_directory(build_dir, 'index.html')
+    
+
+def get_current_service_account_email():
+    # This queries the metadata server in GCP to get the service account email your code runs under
+    try:
+        url = "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/email"
+        headers = {"Metadata-Flavor": "Google"}
+        resp = requests.get(url, headers=headers)
+        if resp.status_code == 200:
+            return resp.text
+        else:
+            return "Unknown"
+    except Exception as e:
+        return f"Error: {e}"
+
+print("Current service account:", get_current_service_account_email())
+
+def test_storage_access():
+    client = storage.Client()
+    bucket = client.bucket("digicap-uploads")
+    blobs = list(bucket.list_blobs(max_results=1))
+    print(f"Bucket access success. Found {len(blobs)} objects.")
+
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))

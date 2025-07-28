@@ -4,3 +4,4 @@ pymongo
 python-dotenv
 flask-pymongo
 gunicorn
+google-cloud-storage
