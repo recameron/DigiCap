@@ -23,7 +23,7 @@ Welcome to **DigiCap**, a web application that lets users create and store digit
 ### Backend
 
 - **Python** (Flask)
-- **MongoDB Atlas** (cloud database)
+- **Google Firestore** (cloud database)
 
 ### Deployment
 
