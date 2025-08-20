@@ -6,7 +6,7 @@ export default function Header() {
       <img
         src="https://storage.googleapis.com/digicap-components/Images/digicap_logo-removebg-preview.png"
         alt="DigiCap Logo"
-        className="h-10 w-auto mr-3"
+        className="h-16 w-auto mr-3"
       />
       <h1 className="text-xl font-bold text-indigo-700"></h1>
     </header>
